@@ -1,4 +1,4 @@
-package com.example.student.util;
+package com.example.jdbc;
 
 import java.sql.*;
 

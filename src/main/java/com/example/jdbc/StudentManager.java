@@ -1,7 +1,4 @@
-package com.example.student;
-
-import com.example.student.model.Student;
-import com.example.student.util.DBUtil;
+package com.example.jdbc;
 
 import java.sql.*;
 import java.util.ArrayList;
