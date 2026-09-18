@@ -5,19 +5,24 @@ public class Student {
     private String name;
     private int age;
     private String major;
+    private int classId;
 
     public Student() {
     }
-    public Student(int id,String name,int age,String major) {
+    public Student(String name, int age, String major, int classId) {
+        this.name = name;
+        this.age = age;
+        this.major = major;
+        this.classId = classId;
+    }
+
+    // 查询用（有 id）
+    public Student(int id, String name, int age, String major, int classId) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.major = major;
-    }
-    public Student(String name,int age,String major) {
-        this.name = name;
-        this.age = age;
-        this.major = major;
+        this.classId = classId;
     }
     public int getId() { return id;}
     public void setId(int id) { this.id = id;}
@@ -31,6 +36,9 @@ public class Student {
     public  String getMajor() {return major;}
     public  void setMajor(String major) {this.major = major;}
 
+    public int getClassId() { return classId; }
+    public void setClassId(int classId) { this.classId = classId; }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -38,6 +46,7 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", major='" + major + '\'' +
+                ", classId=" + classId +
                 '}';
     }
 }

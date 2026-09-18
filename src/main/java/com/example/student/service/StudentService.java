@@ -12,14 +12,14 @@ public class StudentService {
     /**
      * 添加学生，带业务校验
      */
-    public void addStudent(String name, int age, String major) {
+    public void addStudent(String name, int age, String major,int classId) {
         if (name == null || name.trim().length() < 2) {
             throw new IllegalArgumentException("姓名不合法");
         }
         if (age < 0 || age > 150) {
             throw new IllegalArgumentException("年龄不合法");
         }
-        Student student = new Student(name, age, major);
+        Student student = new Student(name, age, major,classId);
         studentDao.insert(student);
     }
 
@@ -33,14 +33,14 @@ public class StudentService {
     /**
      * 修改学生
      */
-    public void updateStudent(int id, String name, int age, String major) {
+    public void updateStudent(int id, String name, int age, String major,int classId) {
         if (name == null || name.trim().length() < 2) {
             throw new IllegalArgumentException("姓名不合法");
         }
         if (age < 0 || age > 150) {
             throw new IllegalArgumentException("年龄不合法");
         }
-        Student student = new Student(id, name, age, major);
+        Student student = new Student(id, name, age, major,classId);
         studentDao.update(student);
     }
 

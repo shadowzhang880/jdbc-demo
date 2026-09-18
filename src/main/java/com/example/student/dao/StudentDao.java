@@ -13,13 +13,14 @@ public class StudentDao {
      * 插入学生
      */
     public void insert(Student student) {
-        String sql = "INSERT INTO student (name, age, major) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO student (name, age, major, class_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, student.getName());
             pstmt.setInt(2, student.getAge());
             pstmt.setString(3, student.getMajor());
+            pstmt.setInt(4, student.getClassId());   // 新增
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -46,18 +47,19 @@ public class StudentDao {
      * 更新学生
      */
     public void update(Student student) {
-        String sql = "UPDATE student SET name = ?, age = ?, major = ? WHERE id = ?";
+        String sql = "UPDATE student SET name = ?, age = ?, major = ?, class_id = ? WHERE id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, student.getName());
             pstmt.setInt(2, student.getAge());
             pstmt.setString(3, student.getMajor());
-            pstmt.setInt(4, student.getId());
+            pstmt.setInt(4, student.getClassId());   // 新增
+            pstmt.setInt(5, student.getId());        // 原来的第 4 个问号变成第 5 个
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("更新学生失败", e);
+            throw new RuntimeException("更新学生信息失败", e);
         }
     }
 
@@ -65,7 +67,7 @@ public class StudentDao {
      * 查询所有学生
      */
     public List<Student> findAll() {
-        String sql = "SELECT id, name, age, major FROM student";
+        String sql = "SELECT id, name, age, major, class_id FROM student";   // 加上 class_id
         List<Student> students = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection();
@@ -78,7 +80,6 @@ public class StudentDao {
         } catch (SQLException e) {
             throw new RuntimeException("查询所有学生失败", e);
         }
-
         return students;
     }
 
@@ -86,7 +87,7 @@ public class StudentDao {
      * 根据 id 查询
      */
     public Student findById(int id) {
-        String sql = "SELECT id, name, age, major FROM student WHERE id = ?";
+        String sql = "SELECT id, name, age, major, class_id FROM student WHERE id = ?";   // 加上 class_id
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -110,7 +111,8 @@ public class StudentDao {
                 rs.getInt("id"),
                 rs.getString("name"),
                 rs.getInt("age"),
-                rs.getString("major")
+                rs.getString("major"),
+                rs.getInt("class_id")   // 新增
         );
     }
 
@@ -119,7 +121,7 @@ public class StudentDao {
      */
     public List<Student> findByMajor(String major) {
 
-        String sql = "SELECT id,name,age,major FROM student WHERE major = ?";
+        String sql = "SELECT id, name, age, major, class_id FROM student WHERE major = ?";
         List<Student> students = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection();
@@ -145,7 +147,7 @@ public class StudentDao {
      * 按姓名模糊查询
      */
     public List<Student> findByNameLike(String keyword) {
-        String sql = "SELECT id, name, age, major FROM student WHERE name LIKE ?";
+        String sql = "SELECT id, name, age, major, class_id FROM student WHERE name LIKE ?";
         List<Student> students = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection();
@@ -162,5 +164,29 @@ public class StudentDao {
         }
         return students;
     }
+    public List<Student> findStudentWithClass() {
+        String sql = "SELECT s.id, s.name, s.age, s.major, s.class_id, c.class_name " +
+                "FROM student s LEFT JOIN class c ON s.class_id = c.id";
+        List<Student> students = new ArrayList<>();
 
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Student s = new Student(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("age"),
+                        rs.getString("major"),
+                        rs.getInt("class_id")
+                );
+                // 可以把 class_name 也存到 Student 里，或者单独处理
+                students.add(s);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("查询学生及班级失败", e);
+        }
+        return students;
+    }
 }

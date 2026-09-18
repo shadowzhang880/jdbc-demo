@@ -6,9 +6,13 @@ import com.example.student.service.StudentService;
 import java.util.List;
 import java.util.Scanner;
 
+import com.example.student.model.Class;
+import com.example.student.service.ClassService;
+
 public class Main {
     private static final StudentService service = new StudentService();
     private static final Scanner scanner = new Scanner(System.in);
+    private static final ClassService classService = new ClassService();
 
     public static void main(String[] args) {
         while (true) {
@@ -39,6 +43,15 @@ public class Main {
                 case 7:
                     findByNameLike();
                     break;
+                case 8:
+                    addClass();
+                    break;
+                case 9:
+                    findAllClasses();
+                    break;
+                case 10:
+                    deleteClass();
+                    break;
                 case 0:
                     System.out.println("退出系统，再见！");
                     scanner.close();
@@ -59,6 +72,9 @@ public class Main {
         System.out.println("5. 删除学生");
         System.out.println("6. 按专业查询");
         System.out.println("7. 按姓名模糊查询");
+        System.out.println("8. 添加班级");
+        System.out.println("9. 查询所有班级");
+        System.out.println("10. 删除班级");
         System.out.println("0. 退出");
         System.out.println("============================");
     }
@@ -71,9 +87,12 @@ public class Main {
         scanner.nextLine();
         System.out.println("请输入专业：");
         String major = scanner.nextLine();
+        System.out.println("请输入班级：");
+        int classId = scanner.nextInt();
+        scanner.nextLine();
 
         try {
-            service.addStudent(name,age,major);
+            service.addStudent(name,age,major,classId);
             System.out.println("添加成功");
 
         }catch (Exception e) {
@@ -117,9 +136,12 @@ public class Main {
         scanner.nextLine();
         System.out.print("请输入新专业：");
         String major = scanner.nextLine();
+        System.out.println("请输入班级：");
+        int classId = scanner.nextInt();
+        scanner.nextLine();
 
         try {
-            service.updateStudent(id, name, age, major);
+            service.updateStudent(id, name, age, major, classId);
             System.out.println("修改成功！");
         } catch (Exception e) {
             System.out.println("修改失败：" + e.getMessage());
@@ -164,6 +186,40 @@ public class Main {
             for (Student s : students) {
                 System.out.println(s);
             }
+        }
+    }
+
+    private static void addClass() {
+        System.out.print("请输入班级名称：");
+        String className = scanner.nextLine();
+        try {
+            classService.addClass(className);
+            System.out.println("添加成功！");
+        } catch (Exception e) {
+            System.out.println("添加失败：" + e.getMessage());
+        }
+    }
+
+    private static void findAllClasses() {
+        List<Class> classes = classService.findAllClasses();
+        if (classes.isEmpty()) {
+            System.out.println("暂无班级数据。");
+        } else {
+            for (Class c : classes) {
+                System.out.println(c);
+            }
+        }
+    }
+
+    private static void deleteClass() {
+        System.out.print("请输入要删除的班级 id：");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        try {
+            classService.deleteClass(id);
+            System.out.println("删除成功！");
+        } catch (Exception e) {
+            System.out.println("删除失败：" + e.getMessage());
         }
     }
 }
