@@ -3,11 +3,11 @@ package com.example.student;
 import com.example.student.model.Student;
 import com.example.student.service.StudentService;
 
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import com.example.student.model.Class;
 import com.example.student.service.ClassService;
+import java.util.Map;
 
 public class Main {
     private static final StudentService service = new StudentService();
@@ -52,6 +52,15 @@ public class Main {
                 case 10:
                     deleteClass();
                     break;
+                case 11:
+                    findStudentsWithClass();
+                    break;
+                case 12:
+                    countByMajor();
+                    break;
+                case 13:
+                    countByClass();
+                    break;
                 case 0:
                     System.out.println("退出系统，再见！");
                     scanner.close();
@@ -75,6 +84,9 @@ public class Main {
         System.out.println("8. 添加班级");
         System.out.println("9. 查询所有班级");
         System.out.println("10. 删除班级");
+        System.out.println("11. 查询学生及班级");
+        System.out.println("12. 按专业统计人数");
+        System.out.println("13. 按班级统计人数");
         System.out.println("0. 退出");
         System.out.println("============================");
     }
@@ -220,6 +232,41 @@ public class Main {
             System.out.println("删除成功！");
         } catch (Exception e) {
             System.out.println("删除失败：" + e.getMessage());
+        }
+    }
+
+    private static void findStudentsWithClass() {
+        List<Student> students = service.findStudentWithClass();
+        if(students.isEmpty()) {
+            System.out.println("暂无学生数据");
+        }else {
+            for(Student s : students) {
+                System.out.println(s);
+            }
+        }
+    }
+
+    private static void countByMajor() {
+        Map<String,Integer> result = service.countStudentByMajor();
+        if (result.isEmpty()) {
+            System.out.println("暂无数据");
+        }else {
+            System.out.println("===== 按专业统计 =====");
+            for (Map.Entry<String,Integer> entry: result.entrySet()) {
+                System.out.println(entry.getKey()+":"+entry.getValue()+"人");
+            }
+        }
+    }
+
+    private static void countByClass() {
+        Map<String,Integer> result = new LinkedHashMap<>();
+        if(result.isEmpty()) {
+            System.out.println("暂无数据");
+        }else {
+            System.out.println("===== 按班级统计 =====");
+            for (Map.Entry<String,Integer> entry: result.entrySet()) {
+                System.out.println(entry.getKey()+":"+entry.getValue()+"人");
+            }
         }
     }
 }

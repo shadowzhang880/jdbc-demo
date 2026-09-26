@@ -5,7 +5,9 @@ import com.example.student.util.DBUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StudentDao {
 
@@ -179,7 +181,8 @@ public class StudentDao {
                         rs.getString("name"),
                         rs.getInt("age"),
                         rs.getString("major"),
-                        rs.getInt("class_id")
+                        rs.getInt("class_id"),
+                        rs.getString("class_name")
                 );
                 // 可以把 class_name 也存到 Student 里，或者单独处理
                 students.add(s);
@@ -188,5 +191,42 @@ public class StudentDao {
             throw new RuntimeException("查询学生及班级失败", e);
         }
         return students;
+    }
+
+    public Map<String,Integer> countByMajor() {
+        String sql = "SELECT major, COUNT(*) AS count FROM student GROUP BY major";
+        Map<String,Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()){
+
+            while (rs.next()){
+                result.put(rs.getString("major"),rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("按专业统计失败",e);
+        }
+        return result;
+    }
+
+    public Map<String,Integer> countByClass() {
+
+        String sql = "SELECT c.class_name, COUNT(s.id) AS count " +
+                "FROM class c LEFT JOIN student s ON c.id = s.class_id " +
+                "GROUP BY c.id, c.class_name";
+        Map<String,Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()){
+
+            while (rs.next()) {
+                result.put(rs.getString("class"),rs.getInt("count") );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("按班级统计失败",e);
+        }
+        return result;
     }
 }

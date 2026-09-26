@@ -4,6 +4,7 @@ import com.example.student.dao.StudentDao;
 import com.example.student.model.Student;
 
 import java.util.List;
+import java.util.Map;
 
 public class StudentService {
 
@@ -64,5 +65,17 @@ public class StudentService {
 
     public List<Student> findStudentsByNameLike(String keyword) {
         return studentDao.findByNameLike(keyword);
+    }
+
+    public List<Student> findStudentWithClass() {
+        return studentDao.findStudentWithClass();
+    }
+
+    public Map<String,Integer> countStudentByMajor() {
+        return studentDao.countByMajor();
+    }
+
+    public Map<String,Integer> CountStudentByClass() {
+        return studentDao.countByClass();
     }
 }

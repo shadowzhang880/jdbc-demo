@@ -6,6 +6,7 @@ public class Student {
     private int age;
     private String major;
     private int classId;
+    private String className;
 
     public Student() {
     }
@@ -24,6 +25,16 @@ public class Student {
         this.major = major;
         this.classId = classId;
     }
+
+    public Student(int id, String name, int age, String major, int classId, String className) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.major = major;
+        this.classId = classId;
+        this.className = className;
+    }
+
     public int getId() { return id;}
     public void setId(int id) { this.id = id;}
 
@@ -39,6 +50,9 @@ public class Student {
     public int getClassId() { return classId; }
     public void setClassId(int classId) { this.classId = classId; }
 
+    public String getClassName() {return className;}
+    public void setClassName(String className) {this.className = className;}
+
     @Override
     public String toString() {
         return "Student{" +
@@ -47,6 +61,7 @@ public class Student {
                 ", age=" + age +
                 ", major='" + major + '\'' +
                 ", classId=" + classId +
+                ", className='" + className + '\'' +
                 '}';
     }
 }
